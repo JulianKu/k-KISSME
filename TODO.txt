@@ -3,3 +3,8 @@ for next week (20.11.)
 Sonja -> Implementierung in R
 Miro -> Constraints aus Dateinamen + Feature Extraction
 Julian -> Feature Extraction
+
+Generate Constraints:
+- read samples from both sets of data that belong to same person
+- make constraint array for must-links
+- make constraint array for cannot-links
