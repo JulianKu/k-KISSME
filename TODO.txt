@@ -1,0 +1,5 @@
+for next week (20.11.)
+
+Sonja -> Implementierung in R
+Miro -> Constraints aus Dateinamen + Feature Extraction
+Julian -> Feature Extraction
