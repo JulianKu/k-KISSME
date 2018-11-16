@@ -3,3 +3,8 @@ for next week (20.11.)
 Sonja -> Implementierung in R
 Miro -> Constraints aus Dateinamen + Feature Extraction
 Julian -> Feature Extraction
+
+Feature Extraction:
+- use given reference from paper
+- understand used algorithms
+- implement feature extraction in R
