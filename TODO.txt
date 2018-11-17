@@ -4,7 +4,7 @@ Sonja -> Implementierung in R
 Miro -> Constraints aus Dateinamen + Feature Extraction
 Julian -> Feature Extraction
 
-Feature Extraction:
-- use given reference from paper
-- understand used algorithms
-- implement feature extraction in R
+Generate Constraints:
+- read samples from both sets of data that belong to same person
+- make constraint array for must-links
+- make constraint array for cannot-links
