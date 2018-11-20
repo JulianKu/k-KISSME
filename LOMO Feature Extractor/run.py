@@ -17,7 +17,7 @@ for directory in os.listdir(data_path):
         if len(img_list) == 0:
             print('Data directory ' + data_path + directory + ' is empty.')
             continue
-        
+        print('Processing images in directory ' + data_path + directory)
         lomos = {} # create dictionary for the feature vectors of all the images (img_name as key)
         for counter, img_name in enumerate(img_list):
             if not img_name.lower().endswith(('.jpg','.jpeg','.bmp','.png')): # only perform lomo on images
@@ -30,7 +30,7 @@ for directory in os.listdir(data_path):
             lomos[img_name] = lomo_vec # append image and corresponding vector to dict
             
             print('Number of images processed: ', counter)
-        print('directory ' + directory ' finished')
+        print('directory ' + directory + ' finished')
         
         # write data in dat file
         print('start writing data into file')
@@ -44,4 +44,5 @@ for directory in os.listdir(data_path):
                     row.append(lomos[key][element])
                 csvwriter.writerow(row)
         l_file.close()
+        print('writing finished')
 print('process finished')
