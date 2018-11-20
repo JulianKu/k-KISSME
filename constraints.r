@@ -33,7 +33,7 @@ shifter <- function(x, n = 1) {
 # change indexes for the cannot-link constraints
 prmcrrct <- FALSE                                  # flag if permutation is correct
 while (!prmcrrct) {
-    perm2 <- sample(perm[1:half_files])            # new permutation
+    perm2 <- sample(idx_train)                     # new permutation
     mask <- idx_train == perm2                     # look for indexes that have not changed in the permutation
     if (sum(mask) > 1) {
         perm2[mask] <- shifter(perm2[mask])
