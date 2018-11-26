@@ -6,25 +6,20 @@
 # OUTPUT
 #    H: the matrix H that satisfies Sigma = 1/n*X*H*X'
 
-
 calculateH = function(noTrainEx,ib, ie)
 {
-# initialisation
-  B <- matrix(0,noTrainEx,noTrainEx) 
-  E <- matrix(0,noTrainEx,noTrainEx)
-  W <- matrix(0,noTrainEx,noTrainEx) 
-  
-  #Calculate B and E - set the diaogonal with the count of occurences
-  for(i in 1:noTrainEx)
-    B[i,i]=sum(ib == i)
-    E[i,i]=sum(ie == i)
-  
-  #Calculate W
-  for(i in 1:length(ib))
-      W[ib[i],ie[i] ] <- W[ib[i],ie[i] ] + 1
-  
-  
-  H <- B + E - t(W) - W    
-  
-  return <- H
+    # initialisation
+    W <- matrix(0,noTrainEx,noTrainEx) 
+    
+    #Calculate B and E - set the diaogonal with the count of occurences
+    B <- diag(tabulate(ib, noTrainEx))
+    E <- diag(tabulate(ie, noTrainEx))
+    
+    #Calculate W
+    W[ib + nrow(W) * (ie - 1)] <- 1
+    
+    
+    H <- B + E - t(W) - W    
+    
+    return <- H
 }
