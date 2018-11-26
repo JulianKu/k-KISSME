@@ -1,10 +1,10 @@
-#Calculate the kernel matrix H
+#Calculate the helper matrix H
 # INPUT
-#   noTrainEx: the number of training examples
-#   ib: indices of the first terms in pairs (vector)
-#   ie: indices of the second terms in pairs (vector)
+#   noTrainEx:  the number of training examples
+#   ib:         indices of the first terms in pairs (vector)
+#   ie:         indices of the second terms in pairs (vector)
 # OUTPUT
-#    H: the matrix H that satisfies Sigma = 1/n*X*H*X'
+#   H:          the matrix H that satisfies Sigma = 1/n*X*H*X'
 
 calculateH = function(noTrainEx,ib, ie)
 {
