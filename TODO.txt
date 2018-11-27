@@ -4,7 +4,14 @@ Sonja -> Implementierung in R
 Miro -> Constraints aus Dateinamen + Feature Extraction
 Julian -> Feature Extraction
 
+<<<<<<< HEAD
 Generate Constraints:
 - read samples from both sets of data that belong to same person
 - make constraint array for must-links
 - make constraint array for cannot-links
+=======
+Implementierung in R:
+- Take code from Matlab
+- Find corresponding functions in R
+- (maybe compare outcomes with Matlab Demo to ensure correctness)
+>>>>>>> computeH
