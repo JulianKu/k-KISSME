@@ -33,4 +33,6 @@ K <- kernelMatrix(rbf, t(X_train))
 
 eps <- 0.001
 pmetric <- FALSE
-result <- kernel(eps, cnstr, K, pmetric)
+C <- kernel(eps, cnstr, K, pmetric)
+
+dist <- mahalanobis(X_train, X_train, C, inverted = TRUE)
