@@ -10,10 +10,12 @@ computeI = function(eps, n, H, K)
     #   K:      kernel matrix
     # OUTPUT
     #   I:      helper matrix used for kernel computation
-    A <- diag(dim(K)[1]) + 1/(n*eps) * K %*% H
     library(matlib)
-    I <- (1 / (n*eps^2)) * H %*% Ginv(A)
-    return(I)
+    library(Matrix)
+    
+    A <- Diagonal(n=dim(K)[1]) + 1/(n*eps) * K %*% H
+    I <- (1 / (n*eps^2)) * H %*% solve(A, sparse = TRUE)
+    return(Matrix(I, sparse = TRUE))
 }
 
 kernel = function(eps, cnstr, K, pmetric)
@@ -46,5 +48,5 @@ kernel = function(eps, cnstr, K, pmetric)
     if (pmetric == TRUE) {
         print("projection for incremental update not implemented yet")
     }
-    return(C)
+    return(Matrix(C, sparse = TRUE))
 }

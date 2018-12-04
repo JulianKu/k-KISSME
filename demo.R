@@ -28,11 +28,19 @@ cnstr <- genConstraints(train)
 
 library(kernlab)
 # compute kernel matrix
-rbf <- rbfdot(sigma = 2^-16)
-K <- kernelMatrix(rbf, t(X_train))
+#rbf <- rbfdot(sigma = 2^-16)
+K <- kernelMatrix(vanilladot(), t(X_train))
 
 eps <- 0.001
 pmetric <- FALSE
 C <- kernel(eps, cnstr, K, pmetric)
 
-dist <- mahalanobis(X_train, X_train, C, inverted = TRUE)
+library(biotools)
+dist <- D2.dist(as.matrix(K), as.matrix(C), inverted = TRUE)
+dist <- as.data.frame(as.matrix(dist))
+
+# dist_sort1 <- dist[order(dist$X012_0.bmp), 'X012_0.bmp', drop=FALSE]
+dist_sort <- apply(dist,2,order)
+dist_sort2 <- apply(dist_sort,1, function(x) colnames(X_train)[x])
+# library(HDMD)
+# dist <- pairwise.mahalanobis(as.matrix(K), cov = as.matrix(C), inverted = TRUE)
