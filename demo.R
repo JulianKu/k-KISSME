@@ -4,6 +4,7 @@
 source("kernel.R")
 source("constraints.R")
 source("distance.R")
+source("Visualization.R")
 
 # directory of feature vectors
 dir <- "LOMO\ Feature\ Extractor/data/VIPeR"
@@ -51,4 +52,12 @@ for (i in seq(1,nranks)) {
     scores[[i]] <- score(rankedDists[[i]])
     print(sprintf("Rank-%d Matching Rate: %.2f", ranks[i],scores[[i]]))
 }
+
+# PLOT
+test_idx = c(1,2,3,4)
+rank = 5
+results <- rankedResults(Mdist, rank)
+image_dataframe <- results[test_idx, c(T,F)]
+plot_rank(image_dataframe, rank)
+
 
