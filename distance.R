@@ -47,18 +47,31 @@ calcDist = function(datA,datB, C)
     }
 }
 
+#function that finds n (=rank) lowest elements in M
+nlowest <- function(M,n.min) 
+{
+    O <- order(M)[1:n.min]
+    rbind(O,M[O])
+}
+
 #Get results for the distances between samples
 # INPUT
 #   data:       dataset
-#   idxTest:   indices of data to test
+#   idxTest:    indices of data to test
 #   C:          inverse covariance matrix (d x d)
+#   rank:       number of samples with lowest distance that are to be taken into account
 # OUTPUT
-#   results:     
+#   results:    data frame containing for every tested image from camera a 
+#               the images from camera b and corresponding distances that are lowest
 
-results = function(data, n_data, idxTest, C)
+results = function(data, n_data, idxTest, C, rank)
 {
     datA <- data[ ,idxTest]
     datB <- data[ ,idxTest+n_data]
     Mdist <- calcDist(datA, datB, C)
-    return(Mdist)
+    result <- as.data.frame(t(apply(Mdist,1,nlowest,n.min = rank)))
+    result[,c(T,F)] <- colnames(Mdist)[unlist(result[,c(T,F)])]
+    colnames(result) <- rep(c("image", "distance"), times = rank)
+    return(result)
 }
+
