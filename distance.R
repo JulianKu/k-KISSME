@@ -59,19 +59,46 @@ nlowest <- function(M,n.min)
 #   data:       dataset
 #   idxTest:    indices of data to test
 #   C:          inverse covariance matrix (d x d)
-#   rank:       number of samples with lowest distance that are to be taken into account
 # OUTPUT
-#   results:    data frame containing for every tested image from camera a 
-#               the images from camera b and corresponding distances that are lowest
+#   Mdist:      matrix of distances between all samples of datA and datB (n1 x n2) 
 
-results = function(data, n_data, idxTest, C, rank)
+results = function(data, n_data, idxTest, C)
 {
     datA <- data[ ,idxTest]
     datB <- data[ ,idxTest+n_data]
     Mdist <- calcDist(datA, datB, C)
+    return(Mdist)
+}
+
+#Sort results and return the by rank defined number of images for each image that have the lowest distance
+# INPUT
+#   Mdist:      matrix of distances
+#   rank:       number of samples with lowest distance that are to be taken into account
+# OUTPUT
+#   results:    data frame containing for every tested image from camera a 
+#               the images from camera b and corresponding distances that are lowest
+rankedResults = function(Mdist, rank)
+{
     result <- as.data.frame(t(apply(Mdist,1,nlowest,n.min = rank)))
     result[,c(T,F)] <- colnames(Mdist)[unlist(result[,c(T,F)])]
     colnames(result) <- rep(c("image", "distance"), times = rank)
     return(result)
+}
+
+#Returns ranked position of image from camera B that is a match for the image defined by row
+#if no match, returns NA
+matches <- function(rankedDist, row) 
+{
+    key <- substr(row,start=1,stop=4)
+    against <- substr(rankedDist[row,],start=1,stop=4)
+    return(match(key,against) %/% 2 + 1)
+}
+
+#Returns matching rate for given ranked distance in percent
+score <- function(rankedDist)
+{
+    lMatches <- sapply(rownames(rankedDist), matches, rankedDist=rankedDist)
+    score <- sum(!is.na(lMatches))/length(lMatches) * 100
+    return(score)
 }
 
