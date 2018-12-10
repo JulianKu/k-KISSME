@@ -58,6 +58,4 @@ test_idx = c(1,2,3,4)
 rank = 5
 results <- rankedResults(Mdist, rank)
 image_dataframe <- results[test_idx, c(T,F)]
-plot_rank(image_dataframe, rank)
-
-
+plot_rank(image_dataframe, rank, dir)
