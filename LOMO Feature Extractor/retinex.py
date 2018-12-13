@@ -1,3 +1,7 @@
+'''
+implementation of the Retinex transformation
+'''
+
 import numpy as np
 import cv2
 

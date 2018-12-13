@@ -1,33 +1,49 @@
-import os
+'''
+Main script for LOMO feature extraction
+Reads image one by one and performs LOMO on each
+Saves descriptors for every set of images in *.dat file
+'''
 
+# import dependencies
+import os
 import json
 import cv2
 import csv
-
 import lomo
 
+# load configuration parameters
 with open('config.json', 'r') as f:
     config = json.load(f)
 
+# read images from given path
 data_path = 'data/VIPeR/'
 for directory in os.listdir(data_path):
     if os.path.isdir(data_path + directory):
-    
+        
+        #list of images
         img_list = os.listdir(data_path + directory)
         if len(img_list) == 0:
             print('Data directory ' + data_path + directory + ' is empty.')
             continue
         print('Processing images in directory ' + data_path + directory)
-        lomos = {} # create dictionary for the feature vectors of all the images (img_name as key)
+        
+        # initialize dictionary for the feature vectors of all the images (img_name as key)
+        lomos = {}
+        
+        #iterate over images
         for counter, img_name in enumerate(img_list):
-            if not img_name.lower().endswith(('.jpg','.jpeg','.bmp','.png')): # only perform lomo on images
+            # verify that file is image -> only perform lomo on images
+            if not img_name.lower().endswith(('.jpg','.jpeg','.bmp','.png')):
                 continue
-        
-            img = cv2.imread(os.path.join(data_path + directory, img_name)) # read image
-        
-            lomo_vec = lomo.LOMO(img, config) # compute LOMO feature vector
             
-            lomos[img_name] = lomo_vec # append image and corresponding vector to dict
+            # read image
+            img = cv2.imread(os.path.join(data_path + directory, img_name))
+            
+            # compute LOMO feature vector
+            lomo_vec = lomo.LOMO(img, config)
+            
+            # append image and corresponding vector to dict
+            lomos[img_name] = lomo_vec
             
             print('Number of images processed: ', counter)
         print('directory ' + directory + ' finished')
