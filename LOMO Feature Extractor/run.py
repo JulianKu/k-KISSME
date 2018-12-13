@@ -9,6 +9,7 @@ import os
 import json
 import cv2
 import csv
+from tqdm import tqdm
 import lomo
 
 # load configuration parameters
@@ -31,7 +32,7 @@ for directory in os.listdir(data_path):
         lomos = {}
         
         #iterate over images
-        for counter, img_name in enumerate(img_list):
+        for counter, img_name in enumerate(tqdm(img_list[:20], desc='images processed')):
             # verify that file is image -> only perform lomo on images
             if not img_name.lower().endswith(('.jpg','.jpeg','.bmp','.png')):
                 continue
@@ -45,7 +46,6 @@ for directory in os.listdir(data_path):
             # append image and corresponding vector to dict
             lomos[img_name] = lomo_vec
             
-            print('Number of images processed: ', counter)
         print('directory ' + directory + ' finished')
         
         # write data in dat file
@@ -54,7 +54,7 @@ for directory in os.listdir(data_path):
             csvwriter = csv.writer(l_file, dialect='excel', delimiter=',')
             header = lomos.keys()
             csvwriter.writerow(header)
-            for element in range(lomos[img_name].size):
+            for element in tqdm(range(lomos[img_name].size), desc='images processed'):
                 row = []
                 for key in header:
                     row.append(lomos[key][element])
