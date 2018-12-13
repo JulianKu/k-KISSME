@@ -1,8 +1,8 @@
 # DEMO
 
-
-source("kernel.R")
+# import functions
 source("constraints.R")
+source("kCovariance.R")
 source("distance.R")
 source("Visualization.R")
 
@@ -22,6 +22,7 @@ idx <- splitData(n_data, ratio = 0.5)
 iTrain <- idx$train
 iTest <- idx$test
 
+# concatenate both cameras into one set (whole data, training and test set)
 X <- cbind(as.matrix((cam_a)), as.matrix((cam_b)))
 X_train <- cbind(as.matrix((cam_a[iTrain])), as.matrix((cam_b[iTrain])))
 X_test <- cbind(as.matrix((cam_a[iTest])), as.matrix((cam_b[iTest])))
@@ -34,10 +35,13 @@ library(kernlab)
 #rbf <- rbfdot(sigma = 2^-16)
 K <- kernelMatrix(vanilladot(), t(X))
 
+# small regularization constant epsilon
 eps <- 0.001
-pmetric <- FALSE
-C <- kernel(eps, cnstr, K, pmetric)
 
+# compute inverse covariance matrix C
+C <- kCovariance(eps, cnstr, K)
+
+# compute pairwise distance between test images of both datasets
 Mdist <- results(K, n_data, iTest, C)
 
 #Compute different rank matching rates

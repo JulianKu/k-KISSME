@@ -1,7 +1,6 @@
-
 computeI = function(eps, n, H, K)
 {
-    # Helping matrix to compute the kernel
+    # Helping matrix to compute the covariance matrix
     #
     # INPUT
     #   eps:    epsilon for the regularizer
@@ -9,44 +8,46 @@ computeI = function(eps, n, H, K)
     #   H:      H matrix of the corresponding constraint set (S or D)
     #   K:      kernel matrix
     # OUTPUT
-    #   I:      helper matrix used for kernel computation
+    #   I:      helper matrix used for covariance matrix computation
     library(matlib)
     library(Matrix)
     
+    # computation of the helper matrix according to formulas given by the paper
+    # enforce sparseness
     A <- Diagonal(n=dim(K)[1]) + 1/(n*eps) * K %*% H
     I <- (1 / (n*eps^2)) * H %*% solve(A, sparse = TRUE)
     return(Matrix(I, sparse = TRUE))
 }
 
-kernel = function(eps, cnstr, K, pmetric)
+kCovariance = function(eps, cnstr, K)
 {
-    # Calculate the kernel
+    # Calculate the inverse covariance matrix
     #
     # INPUT
     #   eps:    epsilon for the regularizer
-    #   dat:    named list containing must- (S) and cannot-link (D) constraints
+    #   cnstr:  named list containing must- (S) and cannot-link (D) constraints
     #   K:      the kernel matrix
-    #   met:    Is it a metric?
     # OUTPUT
-    #   C:      the matrix used for kernel
+    #   C:      covariance matrix used for distance metric
     
+    source("computeH.R")
     
+    # get must- and cannot-link constraints
     D <- cnstr$D
     S <- cnstr$S
     
-    # number of data samples
+    # number of data samples and constraints
     n <- dim(K)[1]
     n0 <- dim(D)[1]
     n1 <- dim(S)[1]
     
-    source("computeH.R")
+    # compute H matrix for both constraint types
     H0 <- computeH(n,as.matrix(D[1]),as.matrix(D[2]))
     H1 <- computeH(n,as.matrix(S[1]),as.matrix(S[2]))
     
+    # compute covariance matrix according to formulas given by the paper
     C <- computeI(eps,n0,H0,K) - computeI(eps,n1,H1,K)
     
-    if (pmetric == TRUE) {
-        print("projection for incremental update not implemented yet")
-    }
+    # enforce sparseness when returning the covariance matrix
     return(Matrix(C, sparse = TRUE))
 }

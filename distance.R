@@ -6,17 +6,19 @@ rep.col<-function(x,n){
     matrix(rep(x,each=n), ncol=n, byrow=TRUE)
 }
 
-#Calculate the pairwise mahalanobis distance between all samples from dataset A and B 
-#according to the given inverse covariance
-# INPUT
-#   datA:       dataset A (d x n1)
-#   datB:       dataset B (d x n2)
-#   C:          inverse covariance matrix (d x d)
-# OUTPUT
-#   Mdist:      matrix of distances between all samples of datA and datB (n1 x n2)     
-
+    
 calcDist = function(datA,datB, C)
 {
+    #Calculate the pairwise mahalanobis distance between all samples from dataset A and B 
+    #according to the given inverse covariance
+    # INPUT
+    #   datA:       dataset A (d x n1)
+    #   datB:       dataset B (d x n2)
+    #   C:          inverse covariance matrix (d x d)
+    # OUTPUT
+    #   Mdist:      matrix of distances between all samples of datA and datB (n1 x n2) 
+    
+    
     # get input dimensions
     dimA <- dim(datA)
     dA <- dimA[1]
@@ -47,56 +49,68 @@ calcDist = function(datA,datB, C)
     }
 }
 
-#function that finds n (=rank) lowest elements in M
+
 nlowest <- function(M,n.min) 
 {
+    #function that finds n (=rank) lowest elements in M
+    
     O <- order(M)[1:n.min]
     rbind(O,M[O])
 }
 
-#Get results for the distances between samples
-# INPUT
-#   data:       dataset
-#   idxTest:    indices of data to test
-#   C:          inverse covariance matrix (d x d)
-# OUTPUT
-#   Mdist:      matrix of distances between all samples of datA and datB (n1 x n2) 
 
 results = function(data, n_data, idxTest, C)
 {
+    #Get results for the distances between samples
+    # INPUT
+    #   data:       dataset
+    #   idxTest:    indices of data to test
+    #   C:          inverse covariance matrix (d x d)
+    # OUTPUT
+    #   Mdist:      matrix of distances between all samples of datA and datB (n1 x n2) 
+    
+    
+    # splits up data according to camera viewpoint (cam_a and cam_b)
     datA <- data[ ,idxTest]
     datB <- data[ ,idxTest+n_data]
+    # computes pairwise distances between both camera sets
     Mdist <- calcDist(datA, datB, C)
     return(Mdist)
 }
 
-#Sort results and return the by rank defined number of images for each image that have the lowest distance
-# INPUT
-#   Mdist:      matrix of distances
-#   rank:       number of samples with lowest distance that are to be taken into account
-# OUTPUT
-#   results:    data frame containing for every tested image from camera a 
-#               the images from camera b and corresponding distances that are lowest
+
 rankedResults = function(Mdist, rank)
 {
+    #Sort results and return the by rank defined number of images for each image that have the lowest distance
+    # INPUT
+    #   Mdist:      matrix of distances
+    #   rank:       number of samples with lowest distance that are to be taken into account
+    # OUTPUT
+    #   results:    data frame containing for every tested image from camera a 
+    #               the images from camera b and corresponding distances that are lowest
+    
+    
     result <- as.data.frame(t(apply(Mdist,1,nlowest,n.min = rank)))
     result[,c(T,F)] <- colnames(Mdist)[unlist(result[,c(T,F)])]
     colnames(result) <- rep(c("image", "distance"), times = rank)
     return(result)
 }
 
-#Returns ranked position of image from camera B that is a match for the image defined by row
-#if no match, returns NA
 matches <- function(rankedDist, row) 
 {
+    #Returns ranked position of image from camera B that is a match for the image defined by row
+    #if no match, returns NA
+    
     key <- substr(row,start=1,stop=4)
     against <- substr(rankedDist[row,],start=1,stop=4)
     return(match(key,against) %/% 2 + 1)
 }
 
-#Returns matching rate for given ranked distance in percent
+
 score <- function(rankedDist)
 {
+    #Returns matching rate for given ranked distance in percent
+    
     lMatches <- sapply(rownames(rankedDist), matches, rankedDist=rankedDist)
     score <- sum(!is.na(lMatches))/length(lMatches) * 100
     return(score)

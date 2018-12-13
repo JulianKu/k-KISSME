@@ -1,4 +1,4 @@
-#preprocesses the data 
+#data preprocessing
 
 shifter <- function(x, n = 1) {
     # shifts elements in an array by n places
@@ -7,7 +7,7 @@ shifter <- function(x, n = 1) {
 
 importfeat = function(directory)
 {
-    # import feature vectors form external file
+    # import feature vectors from external file
     #
     # INPUT
     #   dir:    directory of feature vector data
@@ -35,20 +35,21 @@ splitData = function(n_data, ratio)
     #
     # INPUT
     #   n_data: number of data samples
-    #   ratio:  ration of training data regarding whole data set (test ratio = 1 train ratio)
+    #   ratio:  ratio of training data regarding whole data set (test ratio = 1 - train ratio)
     # OUTPUT
     #   idx:   named list of index sets for training and test set
     #     - train:      index set for training data
     #     - test:       index set for test data
     
-    half_data <- round(ratio * n_data)
+    # get number of data samples for training set
+    partial_data <- round(ratio * n_data)
     
     # random permutation
     perm <- sample(1:n_data)
     
-    # create equal sized train and test indexes
-    idx_train <- perm[1:half_data]
-    idx_test <- perm[-1:-half_data]
+    # create train and test indices
+    idx_train <- perm[1:partial_data]
+    idx_test <- perm[-1:-partial_data]
     
     idx <- list("train" = idx_train, "test" = idx_test)
     return(idx)
@@ -66,76 +67,27 @@ genConstraints = function(idx)
     #     - D:      data frame for cannot-link constraints
     
     
-    # must-link constraints
+    # must-link constraints (one to one matching between both viewpoint datasets)
     S <- data.frame(idx, idx)
     names(S) <- c("cam_a", "cam_b")
     
     # change indexes for the cannot-link constraints
-    prmcrrct <- FALSE                                  # flag if permutation is correct
+    prmcrrct <- FALSE                           # flag if permutation is correct
     while (!prmcrrct) {
         perm <- sample(idx)                     # new permutation
         mask <- idx == perm                     # look for indexes that have not changed in the permutation
         if (sum(mask) > 1) {
-            perm[mask] <- shifter(perm[mask])
+            perm[mask] <- shifter(perm[mask])   # change unchanged samples
             prmcrrct <- TRUE
-        } else if (sum(mask) == 0) {
+        } else if (sum(mask) == 0) {            # when changin not possible -> reshuffle
             prmcrrct <- TRUE
         }
     }
-    D <- data.frame(idx, perm)              # cannot-link constraints
+    # cannot-link constraints
+    D <- data.frame(idx, perm)              
     names(D) <- c("cam_a", "cam_b")
     
     cnstr <- list("S" = S, "D" = D) 
     
     return(cnstr)
 }
-####################################################### EXAMPLES ####################################################
-
-# # example how to access the training data (permutated training data)
-# train_a <- features_a[,c(idx_train)]
-# 
-# # view the first must-link constraint
-# x1 <- S[1, c("cam_a")]
-# x2 <- S[1, c("cam_b")]
-# 
-# x1_name <- colnames(features_a)[x1]
-# x2_name <- colnames(features_b)[x2]
-# 
-# library('bmp')
-# pic <- read.bmp(sprintf("%s/cam_a/%s", directory, substring(x1_name, 2)))
-# 
-# m <- as.raster(pic, max = 255)
-# plot(1, type = "n", axes = FALSE, xlab = "", ylab = "")
-# usr <- par("usr")
-# rasterImage(m, usr[1], usr[3], usr[2], usr[4])
-# 
-# pic <- read.bmp(sprintf("%s/cam_b/%s", directory, substring(x2_name, 2)))
-# 
-# m <- as.raster(pic, max = 255)
-# plot(1, type = "n", axes = FALSE, xlab = "", ylab = "")
-# usr <- par("usr")
-# rasterImage(m, usr[1], usr[3], usr[2], usr[4])
-# 
-# ####
-# 
-# #view the first cannot-link constraint
-# x1 <- D[1, c("cam_a")]
-# x2 <- D[1, c("cam_b")]
-# 
-# x1_name <- colnames(features_a)[x1]
-# x2_name <- colnames(features_b)[x2]
-# 
-# pic <- read.bmp(sprintf("%s/cam_a/%s", directory, substring(x1_name, 2)))
-# 
-# m <- as.raster(pic, max = 255)
-# plot(1, type = "n", axes = FALSE, xlab = "", ylab = "")
-# usr <- par("usr")
-# rasterImage(m, usr[1], usr[3], usr[2], usr[4])
-# 
-# pic <- read.bmp(sprintf("%s/cam_b/%s", directory, substring(x2_name, 2)))
-# 
-# m <- as.raster(pic, max = 255)
-# plot(1, type = "n", axes = FALSE, xlab = "", ylab = "")
-# usr <- par("usr")
-# rasterImage(m, usr[1], usr[3], usr[2], usr[4])
-           
