@@ -23,14 +23,12 @@ iTrain <- idx$train
 iVal <- idx$validation
 iTest <- idx$test
 
+# generate must- and cannot-link constraints based on the training data
+cnstr <- genConstraints(iTrain)
+
+
 # concatenate both cameras into one set (whole data, training, validation and test set)
 X <- cbind(as.matrix((cam_a)), as.matrix((cam_b)))
-X_train <- cbind(as.matrix((cam_a[iTrain])), as.matrix((cam_b[iTrain])))
-X_val <- cbind(as.matrix((cam_a[iVal])), as.matrix((cam_b[iVal])))
-X_test <- cbind(as.matrix((cam_a[iTest])), as.matrix((cam_b[iTest])))
-
-# generate must- and cannot-link constraints
-cnstr <- genConstraints(iTrain)
 
 library(kernlab)
 # compute kernel matrix
@@ -63,5 +61,5 @@ for (i in seq(1,nranks)) {
 test_idx = c(1,2,3,4)
 rank = 5
 results <- rankedResults(Mdist, rank)
-image_dataframe <- results[val_idx, c(T,F)]
+image_dataframe <- results[test_idx, c(T,F)]
 plot_rank(image_dataframe, rank, dir)

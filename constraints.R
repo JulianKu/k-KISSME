@@ -10,7 +10,7 @@ importfeat = function(directory)
     # import feature vectors from external file
     #
     # INPUT
-    #   dir:    directory of feature vector data
+    #   directory:  directory of feature vector data
     # OUTPUT
     #   feat:   named list of feature vectors for two cameras
     #     - a:      feature vectors of images from camera a
