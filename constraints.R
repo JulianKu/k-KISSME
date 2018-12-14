@@ -29,29 +29,35 @@ importfeat = function(directory)
     return(feat)
 }
 
-splitData = function(n_data, ratio)
+splitData = function(n_data, r_val, r_test)
 {
     # split data into training and test set
     #
     # INPUT
     #   n_data: number of data samples
-    #   ratio:  ratio of training data regarding whole data set (test ratio = 1 - train ratio)
+    #   r_val:  ratio of validation data regarding whole data set
+    #   r_test: ratio of test data regarding whole data set
+    #   (ratio of training data = 1 - r_val - r_test)
     # OUTPUT
     #   idx:   named list of index sets for training and test set
     #     - train:      index set for training data
+    #     - validation: index set for validation data
     #     - test:       index set for test data
     
-    # get number of data samples for training set
-    partial_data <- round(ratio * n_data)
+    # get number of data samples for each partial data set
+    n_val <- round(r_val * n_data)
+    n_test <- round(r_test * n_data)
+    n_train <- n_data - n_val - n_test
     
     # random permutation
     perm <- sample(1:n_data)
     
     # create train and test indices
-    idx_train <- perm[1:partial_data]
-    idx_test <- perm[-1:-partial_data]
+    idx_train <- perm[1:n_train]
+    idx_val <- perm[(n_train+1):(n_train+n_val)]
+    idx_test <- perm[-1:-(n_train+n_val)]
     
-    idx <- list("train" = idx_train, "test" = idx_test)
+    idx <- list("train" = idx_train, "validation" = idx_val, "test" = idx_test)
     return(idx)
 }
 

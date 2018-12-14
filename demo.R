@@ -17,14 +17,16 @@ cam_b <- features$b
 # number of data samples in data set
 n_data <- dim(cam_a)[2]
 
-# split data into training and test set
-idx <- splitData(n_data, ratio = 0.5)
+# split data into training, validation and test set
+idx <- splitData(n_data, r_val = 0.1, r_test = 0.1)
 iTrain <- idx$train
+iVal <- idx$validation
 iTest <- idx$test
 
-# concatenate both cameras into one set (whole data, training and test set)
+# concatenate both cameras into one set (whole data, training, validation and test set)
 X <- cbind(as.matrix((cam_a)), as.matrix((cam_b)))
 X_train <- cbind(as.matrix((cam_a[iTrain])), as.matrix((cam_b[iTrain])))
+X_val <- cbind(as.matrix((cam_a[iVal])), as.matrix((cam_b[iVal])))
 X_test <- cbind(as.matrix((cam_a[iTest])), as.matrix((cam_b[iTest])))
 
 # generate must- and cannot-link constraints
