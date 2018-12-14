@@ -40,6 +40,7 @@ plot_rank = function(image_dataframe, rank, dir) {
         rasterImage(m, usr[1], usr[3], usr[2], usr[4])
         mtext(substring(image_name,2), side = 3, col='white')
         
+        # plot corresponding images from camera b (those with lowest distance)
         for (j in 1:rank) {
             # select image from camera b 
             image_name = image_dataframe[i,j]

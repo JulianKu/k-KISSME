@@ -30,12 +30,12 @@ calcDist = function(datA,datB, C)
     # assert if dimensions match
     stopifnot(exprs = { dA == dB; dA == dC })
     
-    # (a-b)'C(a-b) = a'Ca + b'Cb - 2a'Cb
+    # if one of the datasets is empty -> return 1D-array that is empty
     if (nA == 0 || nB == 0) {
         return(matrix(0L, nrow = nA, ncol = nB))
     } else {
         # compute Mahalanobis distance
-        # note: (a-b)'C(a-b) = a'Ca + b'Cb - 2a'
+        # note: (a-b)'C(a-b) = a'Ca + b'Cb - 2a'Cb
         
         #compute a'Ca for all a in A
         CA <- C %*% datA
@@ -44,6 +44,7 @@ calcDist = function(datA,datB, C)
         CB <- C %*% datB
         BCB <- colSums(datB*CB)
         
+        # dist = a'Ca + b'Cb - 2a'Cb
         Mdist <- rep.col(ACA,nB) + rep.row(BCB,nA) - 2*t(datA) %*% CB
         return(Mdist)
     }
@@ -89,9 +90,11 @@ rankedResults = function(Mdist, rank)
     #   results:    data frame containing for every tested image from camera a 
     #               the images from camera b and corresponding distances that are lowest
     
-    
+    # for every image get the #rank others image that have the lowest distance (save image index and distance in dataframe)
     result <- as.data.frame(t(apply(Mdist,1,nlowest,n.min = rank)))
+    # replace image index with image name (get names from column indices)
     result[,c(T,F)] <- colnames(Mdist)[unlist(result[,c(T,F)])]
+    # name columns
     colnames(result) <- rep(c("image", "distance"), times = rank)
     return(result)
 }
