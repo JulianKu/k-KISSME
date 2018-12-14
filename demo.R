@@ -43,8 +43,8 @@ eps <- 0.001
 # compute inverse covariance matrix C
 C <- kCovariance(eps, cnstr, K)
 
-# compute pairwise distance between test images of both datasets
-Mdist <- results(K, n_data, iTest, C)
+# compute pairwise distance between validation images of both datasets
+Mdist <- results(K, n_data, iVal, C)
 
 #Compute different rank matching rates
 ranks <- c(1,5,10,20)
@@ -63,5 +63,5 @@ for (i in seq(1,nranks)) {
 test_idx = c(1,2,3,4)
 rank = 5
 results <- rankedResults(Mdist, rank)
-image_dataframe <- results[test_idx, c(T,F)]
+image_dataframe <- results[val_idx, c(T,F)]
 plot_rank(image_dataframe, rank, dir)
