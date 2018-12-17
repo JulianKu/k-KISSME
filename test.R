@@ -41,7 +41,7 @@ cnstr <- genConstraints(iTrain)
 library(kernlab)
 # compute kernel matrix
 #rbf <- rbfdot(sigma = 2^-16)
-sigmas <- sapply(-10:4, pow10)
+sigmas <- sapply(-10:10, pow10)
 rbfs <- lapply(sigmas, function(sig){kernelMatrix(rbfdot(sigma = sig), t(X))})
 names(rbfs) <- sapply(sigmas, function(sig){paste('RBF',sig)})
 vanilla <-kernelMatrix(vanilladot(), t(X))
@@ -73,10 +73,11 @@ hypparamResMat <-as.matrix(unlist(testK))
 print("Training with Crossvalidation Results:")
 print(hypparamResMat)
 
-maxKcol <-which(hypparamResMat == max(hypparamResMat), arr.ind = TRUE)[1,]["col"]
-epsMax <- epsVec[which(hypparamResMat == max(hypparamResMat), arr.ind = TRUE)[1]]
+maxKcol <- which(hypparamResMat == max(hypparamResMat), arr.ind = TRUE)[1,1] %/% length(Kernels) + 1
+epsMax <- epsVec[(which(hypparamResMat == max(hypparamResMat), arr.ind = TRUE)[1,1] - 1) %% length(Kernels) +1]
 K <- Kernels[[maxKcol]]
 
+print(sprintf("Kernel: %s", names(Kernels)[maxKcol]))
 print(sprintf("Epsilon: %.12f ", epsMax))
 
 testHyperparamter(cnstr,n_data, iTest, epsMax, K)
