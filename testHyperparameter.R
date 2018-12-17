@@ -1,4 +1,4 @@
-testHyperparamter <-function(cnstr,n_data, iTest, eps, k){
+testHyperparamter <- function(cnstr,n_data, iTest, eps, k){
   # import functions
   source("constraints.R")
   source("kCovariance.R")

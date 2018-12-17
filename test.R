@@ -1,3 +1,5 @@
+pow10 <- function(x){10^x}
+
 # DEMO
 # import functions
 source("constraints.R")
@@ -39,44 +41,41 @@ cnstr <- genConstraints(iTrain)
 library(kernlab)
 # compute kernel matrix
 #rbf <- rbfdot(sigma = 2^-16)
-vanKern <-kernelMatrix(vanilladot(), t(X))
-rbfKern <-kernelMatrix(rbfdot(), t(X))
-polyKern <-kernelMatrix(polydot(), t(X))
+sigmas <- sapply(-10:4, pow10)
+rbfs <- lapply(sigmas, function(sig){kernelMatrix(rbfdot(sigma = sig), t(X))})
+names(rbfs) <- sapply(sigmas, function(sig){paste('RBF',sig)})
+vanilla <-kernelMatrix(vanilladot(), t(X))
+degrees <- 2:10
+polys <- lapply(degrees, function(deg){kernelMatrix(polydot(degree = deg), t(X))})
+names(polys) <- sapply(degrees, function(deg){paste('Poly',deg)})
 
-kKernel <-list(vanKern,rbfKern, polyKern)
-
-#K <- kernelMatrix(vanilladot(), t(X))
+Kernels <-c(list(Linear=vanilla),rbfs, polys)
 
 # small regularization constant epsilon
 #eps <- 0.001
-epsT1 <- sapply(1:12, function(x){10^-x})
-epsT2 <- seq(from = 10^(-6), to = 10^-3, by = (5*10^-5))
-#epsT3 <-seq(from = 10^-3, to = 1 ,by = 5*10^-2)
-epsVec <-c(epsT1, epsT2)
+epsVec <- sapply(seq(-7,0,0.5), pow10)
 
-epsVec <-sample(epsVec,100)
-print(epsVec)
-
-
-
-testK <-lapply(kKernel, function(e)
+testK <- lapply(1:length(Kernels), function(k)
   {
-    K<-e
-    test<-lapply(epsVec, function(d)
+    K <- Kernels[[k]]
+    print(sprintf("Testing kernel %s", names(Kernels)[k]))
+    test <- lapply(1:length(epsVec), function(e)
     {
-      validateHyperparamters(cnstr,n_data, iVal,d,K)
+      eps <- epsVec[e]
+      print(sprintf("Testing epsilon %f", eps))    
+      validateHyperparameters(cnstr,n_data, iVal, eps, K)
     })
     #print(test)
     return(test)
   })
 
-hyperparamterResultMat <-as.matrix(unlist(testK))
+hypparamResMat <-as.matrix(unlist(testK))
 print("Training with Crossvalidation Results:")
-print(hyperparamterResultMat)
+print(hypparamResMat)
 
-maxKcol <-which(hyperparamterResultMat == max(hyperparamterResultMat), arr.ind = TRUE)[1,]["col"]
-epsMax <- epsVec[which(hyperparamterResultMat == max(hyperparamterResultMat), arr.ind = TRUE)[1]]
-K <-kKernel[[maxKcol]]
+maxKcol <-which(hypparamResMat == max(hypparamResMat), arr.ind = TRUE)[1,]["col"]
+epsMax <- epsVec[which(hypparamResMat == max(hypparamResMat), arr.ind = TRUE)[1]]
+K <- Kernels[[maxKcol]]
 
 print(sprintf("Epsilon: %.12f ", epsMax))
 

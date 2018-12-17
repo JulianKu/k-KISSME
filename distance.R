@@ -46,6 +46,8 @@ calcDist = function(datA,datB, C)
         
         # dist = a'Ca + b'Cb - 2a'Cb
         Mdist <- rep.col(ACA,nB) + rep.row(BCB,nA) - 2*t(datA) %*% CB
+        colnames(Mdist) <- colnames(datA)
+        rownames(Mdist) <- colnames(datB)
         return(Mdist)
     }
 }

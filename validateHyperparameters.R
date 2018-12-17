@@ -3,7 +3,7 @@
 #cnstr constrains of training data
 #n_data both datasets (training and validation)
 #iVal  index of validation data
-validateHyperparamters <-function(cnstr,n_data, iVal, eps, k){
+validateHyperparameters <- function(cnstr,n_data, iVal, eps, K){
   
   # import functions
   source("constraints.R")
@@ -14,10 +14,10 @@ validateHyperparamters <-function(cnstr,n_data, iVal, eps, k){
   
   #print(sprintf("Epsilon: %.12f",eps))
   # compute inverse covariance matrix C
-  C <- kCovariance(eps, cnstr, k)
+  C <- kCovariance(eps, cnstr, K)
   
   # compute pairwise distance between validation images of both datasets
-  Mdist <- results(k, n_data, iVal, C)
+  Mdist <- results(K, n_data, iVal, C)
   
   #Compute different rank matching rates
   ranks <- c(1,5,10,20)
