@@ -1,6 +1,0 @@
-for next week (4.12.)
-
-Julian -> debug + distance computation
-Sonja -> Latex aufsetzen
-Miro -> Visualization
-

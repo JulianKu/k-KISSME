@@ -3,7 +3,7 @@
 #cnstr constrains of training data
 #n_data both datasets (training and validation)
 #iVal  index of validation data
-validateHyperparameters <- function(cnstr,n_data, iVal, eps, K){
+validateHyperparameters <- function(cnstr, n_data, iVal, eps, K, ranks, plotrank=FALSE, dir=dir){
   
   # import functions
   source("constraints.R")
@@ -20,7 +20,6 @@ validateHyperparameters <- function(cnstr,n_data, iVal, eps, K){
   Mdist <- results(K, n_data, iVal, C)
   
   #Compute different rank matching rates
-  ranks <- c(1,5,10,20)
   nranks <- length(ranks)
   rankedDists <- vector("list",nranks)
   scores <- vector("list",nranks)
@@ -31,6 +30,14 @@ validateHyperparameters <- function(cnstr,n_data, iVal, eps, K){
     scores[[i]] <- score(rankedDists[[i]])
     #print(sprintf("Rank-%d Matching Rate: %.2f", ranks[i],scores[[i]]))
   }
-  scoreSum <-sum(unlist(scores))
-  return(scoreSum)
+  
+  if (plotrank) {
+      # PLOT
+      plot_idx = c(1,2,3,4)
+      results <- rankedResults(Mdist, plotrank)
+      image_dataframe <- results[plot_idx, c(T,F)]
+      plot_rank(image_dataframe, plotrank, dir)   
+  }
+  
+  return(scores)
 }
