@@ -3,7 +3,7 @@
 #cnstr constrains of training data
 #n_data both datasets (training and validation)
 #iVal  index of validation data
-validateHyperparameters <- function(cnstr, n_data, iVal, eps, K, ranks, plotrank=FALSE, dir=dir){
+validateHyperparameters <- function(cnstr, n_data, iVal, eps, K, ranks, plotrank=FALSE, dir=FALSE){
   
   # import functions
   source("constraints.R")
@@ -33,7 +33,7 @@ validateHyperparameters <- function(cnstr, n_data, iVal, eps, K, ranks, plotrank
   
   if (plotrank) {
       # PLOT
-      plot_idx = c(1,2,3,4)
+      plot_idx = sample(1:length(iVal), 4)
       results <- rankedResults(Mdist, plotrank)
       image_dataframe <- results[plot_idx, c(T,F)]
       plot_rank(image_dataframe, plotrank, dir)   

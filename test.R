@@ -13,6 +13,9 @@ features <- importfeat(dir)
 cam_a <- features$a
 cam_b <- features$b
 
+# concatenate both cameras into one set
+X <- cbind(as.matrix((cam_a)), as.matrix((cam_b)))
+
 # number of data samples in data set
 n_data <- dim(cam_a)[2]
 
@@ -21,10 +24,6 @@ idx <- splitData(n_data, r_val = 0.1, r_test = 0.1)
 iTrain <- idx$train
 iVal <- idx$validation
 iTest <- idx$test
-
-# concatenate both cameras into one set
-X <- cbind(as.matrix((cam_a)), as.matrix((cam_b)))
-
 
 # generate must- and cannot-link constraints
 cnstr <- genConstraints(iTrain)
@@ -84,7 +83,7 @@ maxScores <- testK[[1]][[idxMax]]$scores
 print('Scores of best validation hyperparameter set')
 invisible(sapply(1:length(ranks), function(i){print(sprintf("Rank-%d Matching Rate: %.2f", ranks[i],maxScores[[i]]))}))
 
-# finally return scores on test set with best hyperparameter combination
-testScores <- validateHyperparameters(cnstr,n_data, iTest, epsMax, K, ranks, plotrank = 5)
+# finally return scores on test set with best hyperparameter combination and visualize
+testScores <- validateHyperparameters(cnstr,n_data, iTest, epsMax, K, ranks, plotrank = 5, dir=dir)
 print('Scores on test set')
 invisible(sapply(1:length(ranks), function(i){print(sprintf("Rank-%d Matching Rate: %.2f", ranks[i],testScores[[i]]))}))
