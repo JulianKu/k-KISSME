@@ -4,6 +4,7 @@ plot_rank = function(image_dataframe, rank, dir) {
     #   image_dataframe: dataframe, where rowlabels are pictures from cam a and entries 
     #                    are pics from cam b ordered by distance
     #   rank:            number of samples with lowest distance that are to be taken into account
+    #   dir:             image directory
     # OUTPUT
     #   one plot with all the images from input
     
