@@ -1,7 +1,14 @@
 ## kernelized KISSME
 
+Universitat Politècnica de Catalunya (UPC), Barcelona
+Faculty of Informatics (FIB)
+Kernel-based Machine Learning and Multivariate Modelling (MAI-KMLMM)
+Final Course Project
+
+
 ## Description
-This is an implementation for the kernelized KISSME algorithm in R as described by Nguyen and De Baets (2019)
+This is an implementation for the kernelized KISSME algorithm in R as described by Nguyen and De Baets (2019).
+For more detail, please have a look into the report (`final_report.pdf`)
 
 ## How to
 1. The run.py script in the LOMO Feature Extractor folder needs to be run in order to create the features
