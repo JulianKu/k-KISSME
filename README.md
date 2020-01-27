@@ -1,4 +1,4 @@
-## kernelized KISSME
+# kernelized KISSME
 
 Universitat Politècnica de Catalunya (UPC), Barcelona
 Faculty of Informatics (FIB)
